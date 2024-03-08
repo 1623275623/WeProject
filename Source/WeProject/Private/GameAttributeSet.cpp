@@ -5,6 +5,7 @@
 
 #include "GameplayEffectExtension.h"
 #include "Gameplay/FWeGameplayTags.h"
+#include "Gameplay/GameCharacter.h"
 #include "Gameplay/GamePlayerController.h"
 #include "Gameplay/WeAbilitySystemFunctionLibrary.h"
 #include "Interfaces/CombatInterface.h"
@@ -55,20 +56,20 @@ void UGameAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 	AActor* TargetActor = nullptr;
 	AController* TargetController = nullptr;
-	AWeProjectCharacter* TargetCharacter = nullptr;
+	AGameCharacter* TargetCharacter = nullptr;
 
 	if(Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
 	{
 		TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
 		TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
-		TargetCharacter = Cast<AWeProjectCharacter>(TargetActor);
+		TargetCharacter = Cast<AGameCharacter>(TargetActor);
 	}
 
 	if(Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
 		AActor* SourceActor = nullptr;
 		AController* SourceController = nullptr;
-		AWeProjectCharacter* SourceCharacter = nullptr;
+		AGameCharacter* SourceCharacter = nullptr;
 
 		if(Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
 		{
@@ -85,11 +86,11 @@ void UGameAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 			if(SourceController )
 			{
-				SourceCharacter = Cast<AWeProjectCharacter>(SourceController->GetPawn());
+				SourceCharacter = Cast<AGameCharacter>(SourceController->GetPawn());
 			}
 			else
 			{
-				SourceCharacter = Cast<AWeProjectCharacter>(SourceActor);
+				SourceCharacter = Cast<AGameCharacter>(SourceActor);
 			}
 
 			if(Context.GetEffectCauser())
@@ -104,13 +105,23 @@ void UGameAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 		}
 
 		const float LocalDamageDone = GetDamage();
+		UE_LOG(LogTemp,Error,TEXT("%f"),GetDamage());
 		SetDamage(0.f);
 
 		if(LocalDamageDone > 0)
 		{
 			const float OldHealth = GetHealth();
 			SetHealth(FMath::Clamp(OldHealth - LocalDamageDone,0.0f,GetMaxHealth()));
-
+			TargetCharacter->PlayAnimMontage(TargetCharacter->HitReactMontage);
+			if(GetHealth() == 0.0f)
+			{
+				TargetCharacter->bDead = true;
+				FTimerHandle Handle;
+				GetWorld()->GetTimerManager().SetTimer(Handle,FTimerDelegate::CreateLambda([&]()
+				{
+					TargetCharacter->Destroy();
+				}),3.0,false);
+			}
 			if(TargetCharacter)
 			{
 				TargetCharacter->HandleDamage(LocalDamageDone,HitResult,SourceTags,SourceCharacter,SourceActor);

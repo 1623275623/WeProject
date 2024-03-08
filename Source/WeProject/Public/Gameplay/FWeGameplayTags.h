@@ -20,6 +20,15 @@ public:
 	FGameplayTag InputTag_Look_Stick;
 	FGameplayTag InputTag_Jump;
 	FGameplayTag InputTag_Fire;
+
+	FGameplayTag Abilities_None;
+	
+	FGameplayTag Abilities_Status_Unlocked;
+	FGameplayTag Abilities_Status_Locked;
+	FGameplayTag Abilities_Type_None;
+	FGameplayTag Abilities_HitReact;
+	FGameplayTag Abilities_Status_Equipped;
+
 	
 	FGameplayTag Effects_HitReact;
 	

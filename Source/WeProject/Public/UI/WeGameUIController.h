@@ -7,9 +7,7 @@
 #include "WeGameUIController.generated.h"
 
 
-
-
-
+class UDataTable;
 /**
  * 
  */
@@ -22,6 +20,17 @@ public:
 	//virtual void BroadcastInitialValues() override;
 	//virtual void BindCallbacksToDependencies() override;
 	
+protected:
+	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly,Category="Widget Data")
+	TObjectPtr<UDataTable> MessageWidgetDataTable;
+
+	void OnXpChanged(int32 NewXP);
+
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& Status,
+											const FGameplayTag& Slot,const FGameplayTag& PreviousSlot) const;
+	
+
+
 
 	
 };

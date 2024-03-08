@@ -15,6 +15,13 @@ public:
 	// Sets default values for this actor's properties
 	AEnemyAIController();
 
+	UPROPERTY(EditDefaultsOnly,Category="BlackboardProperty")
+	FName Target;
+
+	UPROPERTY(EditDefaultsOnly,Category="BlackboardProperty")
+	FName EnemyState;
+	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

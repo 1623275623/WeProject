@@ -12,6 +12,16 @@
 #include "Gameplay/GamePlayerState.h"
 #include "Kismet/GameplayStatics.h"
 
+UAbilitySystemComponent* AGameCharacter::GetAbilitySystemComponent() const
+{
+	if(AbilitySystemComponent)
+	{
+		return AbilitySystemComponent;
+	
+	}
+	return nullptr;
+}
+
 // Sets default values
 AGameCharacter::AGameCharacter()
 {
@@ -102,3 +112,31 @@ void AGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+void AGameCharacter::HandleDamage(float DamageAmount, const FHitResult& HitInfo,
+	const FGameplayTagContainer& DamageTags, AGameCharacter* InstigatorCharacter, AActor* DamageCauser)
+{
+	OnDamaged(DamageAmount,HitInfo,InstigatorCharacter,DamageCauser);
+}
+
+void AGameCharacter::HandleHealthChanged(float DeltaValue, const FGameplayTagContainer& EventTags)
+{
+	OnHealthChanged(DeltaValue);
+}
+
+void AGameCharacter::HandleMovementSpeedChanged(float DeltaValue, const FGameplayTagContainer& EventTags)
+{
+	OnMoveSpeedChanged(DeltaValue);
+}
+
+void AGameCharacter::OnDamaged_Implementation(float DamageAmount, const FHitResult& HitInfo,
+	AGameCharacter* InstigatorCharacter, AActor* DamageCauser)
+{
+}
+
+void AGameCharacter::OnHealthChanged_Implementation(float DeltaValue)
+{
+}
+
+void AGameCharacter::OnMoveSpeedChanged_Implementation(float DeltaValue)
+{
+}

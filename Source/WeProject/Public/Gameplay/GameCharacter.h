@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
@@ -13,7 +14,7 @@ class UGameplayAbility;
 class UAttributeSet;
 class UGameAttributeSet;
 UCLASS(Abstract)
-class WEPROJECT_API AGameCharacter : public ACharacter,public ICombatInterface
+class WEPROJECT_API AGameCharacter : public ACharacter,public ICombatInterface,public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -25,8 +26,8 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
-
-	
+	UFUNCTION(BlueprintCallable)
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 public:
 	// Sets default values for this character's properties
@@ -68,7 +69,23 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsShocked = false;
 	
+
+	//Called from AttributeSet,
+	virtual void HandleDamage(float DamageAmount,const FHitResult& HitInfo,const struct FGameplayTagContainer& DamageTags,AGameCharacter* InstigatorCharacter,AActor* DamageCauser);
+
+	virtual void HandleHealthChanged(float DeltaValue,const FGameplayTagContainer& EventTags);
+
+	virtual void HandleMovementSpeedChanged(float DeltaValue,const FGameplayTagContainer& EventTags);
 	
+	UFUNCTION(BlueprintNativeEvent)
+	void OnDamaged(float DamageAmount,const FHitResult& HitInfo,AGameCharacter* InstigatorCharacter,AActor* DamageCauser);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void OnHealthChanged(float DeltaValue);
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void OnMoveSpeedChanged(float DeltaValue);
+
 	
 	
 protected:
@@ -90,8 +107,6 @@ protected:
 	UPROPERTY(EditAnywhere,Category=Combat)
 	FName TailSocketName;
 
-	UPROPERTY(BlueprintReadOnly)
-	bool bDead = false;
 
 
 	virtual void InitAbilityActorInfo();
@@ -105,6 +120,20 @@ protected:
 
 
 public:
+	UPROPERTY(BlueprintReadOnly)
+	bool bDead = false;
+
+	
+	UPROPERTY(EditDefaultsOnly,Category="AnimationMontage")
+	TObjectPtr<UAnimMontage> CommonAttackMontage;
+	
+
+	
+
+	UPROPERTY(EditDefaultsOnly,Category="AnimationMontage")
+	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 

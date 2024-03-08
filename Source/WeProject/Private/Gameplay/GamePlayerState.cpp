@@ -5,6 +5,8 @@
 #include "GameAttributeSet.h"
 
 #include "AbilitySystemComponent.h"
+#include "Gameplay/GameCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 AGamePlayerState::AGamePlayerState()
 {
@@ -71,6 +73,12 @@ void AGamePlayerState::BeginPlay()
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetHealthAttribute()).AddUObject(this,&AGamePlayerState::OnHealthChanged);
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetManaAttribute()).AddUObject(this,&AGamePlayerState::OnManaChanged);
 		
+	}
+
+	AGameCharacter* MyCharacter = Cast<AGameCharacter>(UGameplayStatics::GetPlayerCharacter(this,0));
+	if(MyCharacter)
+	{
+		MyCharacter->AbilitySystemComponent = AbilitySystemComponent;
 	}
 }
 

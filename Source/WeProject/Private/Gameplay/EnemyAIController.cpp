@@ -3,6 +3,9 @@
 
 #include "Gameplay/EnemyAIController.h"
 
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/GameplayStatics.h"
+class ACharacter;
 
 // Sets default values
 AEnemyAIController::AEnemyAIController()
@@ -15,7 +18,7 @@ AEnemyAIController::AEnemyAIController()
 void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame

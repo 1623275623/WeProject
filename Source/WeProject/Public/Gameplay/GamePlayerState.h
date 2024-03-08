@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerState.h"
 #include "GamePlayerState.generated.h"
 
+class ULevelUpInfo;
 struct FOnAttributeChangeData;
 class UGameAttributeSet;
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChanged, int32 /* StatValue*/)
@@ -27,11 +28,17 @@ class WEPROJECT_API AGamePlayerState : public APlayerState,public  IAbilitySyste
 
 
 public:
+
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<ULevelUpInfo> LevelUpInfo;
+
 	
 	AGamePlayerState();
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	
 
 	FOnPlayerStateChanged OnXpChangedDelegate;
 	FOnLevelChanged OnLevelChangedDelegate;

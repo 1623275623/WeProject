@@ -66,9 +66,9 @@ void UGameEffectExecutionCalculation::Execute_Implementation(
 		Attack = Attack * 2.0;
 	}
 	
+
 	
-	
-	float DamageDone = Attack - Armor;
+	float DamageDone = Attack - Armor+FMath::FRand() * 100.0;
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(GameDamageStatics().ArmorProperty,EGameplayModOp::Additive,DamageDone));
 	
 	
